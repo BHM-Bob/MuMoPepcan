@@ -1,0 +1,16 @@
+hiddenlayer==0.3
+matplotlib==3.10.3
+mbapy==0.11.3
+numpy==2.2.6
+optuna==4.3.0
+pandas==2.2.3
+peft==0.15.1
+rdkit==2023.9.6
+scikit_learn==1.4.1.post1
+scipy==1.15.3
+seaborn==0.13.2
+torch>=2.2.2
+torchviz==0.0.3
+tqdm==4.66.4
+transformers==4.46.2
+xgboost==3.0.2
