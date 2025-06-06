@@ -415,4 +415,5 @@ def viz_attn(run_dir: str, sub_name: str = 'best'):
 
 if __name__ == '__main__':
     train(k_fold=5)
-    # vis_attn('/home/pcmd36/Desktop/BHM/Others/nn_dock/runs/2025-01-13 09-57-26.753591', 'best')
+    # evaluate_kfold_model('2025-01-13 10-00-01.114011', 'best')
+    # viz_attn('2025-01-13 10-00-01.114011', 'best')

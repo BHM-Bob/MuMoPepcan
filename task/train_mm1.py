@@ -1,7 +1,7 @@
 '''
 Date: 2025-01-05 20:40:53
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-06-03 10:40:53
+LastEditTime: 2025-06-06 19:51:54
 Description: 
 '''
 from glob import glob
@@ -348,4 +348,3 @@ def evaluate_kfold_model(run_dir: str, sub_name: str = 'best'):
 if __name__ == '__main__':
     train(k_fold=5)
     # evaluate_kfold_model('2025-05-23 08-08-25.423160', 'best_val')
-    # vis_attn('/home/pcmd36/Desktop/BHM/Others/nn_dock/runs/2025-01-13 09-57-26.753591', 'best')
