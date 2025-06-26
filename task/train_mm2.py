@@ -1,9 +1,9 @@
-
-from glob import glob
+import argparse
 import os
 import platform
 import queue
 import shutil
+from glob import glob
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -18,7 +18,7 @@ from mbapy.dl_torch.m import COneD, COneDLayer, LayerCfg, TransCfg
 from mbapy.dl_torch.utils import (AverageMeter, GlobalSettings, Mprint,
                                   ProgressMeter, init_model_parameter,
                                   resume_checkpoint, save_checkpoint)
-from mbapy.file import get_paths_with_extension, get_dir
+from mbapy.file import get_dir, get_paths_with_extension
 from mbapy.plot import save_show
 from scipy.stats import pearsonr
 from sklearn.metrics import f1_score
@@ -30,7 +30,7 @@ from tqdm import tqdm
 torch.set_float32_matmul_precision('high')
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent
 
 import sys
 
@@ -38,9 +38,10 @@ sys.path.append(str(ROOT / 'MuMoPepcan'))
 
 from data.get_data import (MultiDataset, load_PLIP_one_hot, load_pose_data,
                            load_SMILES_feat, load_wet_exp_label)
-from task.utils import draw_loss, get_parameter_number
 from model.loss import BalancedFocalLoss
-from model.MultiModel2 import arch1, arch2, arch3, arch4, arch5, arch6, arch7, arch8
+from model.MultiModel2 import (arch1, arch2, arch3, arch4, arch5, arch6, arch7,
+                               arch8)
+from task.utils import draw_loss, get_parameter_number
 
 
 def train_batch(model: nn.Module, optimizer, criterion1: nn.MSELoss, criterion2: nn.BCEWithLogitsLoss,
@@ -414,6 +415,31 @@ def viz_attn(run_dir: str, sub_name: str = 'best'):
 
 
 if __name__ == '__main__':
-    train(k_fold=5)
-    # evaluate_kfold_model('2025-01-13 10-00-01.114011', 'best')
-    # viz_attn('2025-01-13 10-00-01.114011', 'best')
+    
+    args_paser = argparse.ArgumentParser()
+    subparsers = args_paser.add_subparsers(title='subcommands', dest='sub_command')
+    
+    train_args = subparsers.add_parser('train', description='training the Dual-model')
+    train_args.add_argument('-k', '--k-fold', type=int, default=5,
+                            help='number of folds for k-fold cross-validation')
+    
+    eval_args = subparsers.add_parser('eval', description='evaluate the trained model')
+    eval_args.add_argument('-d', '--run_dir', type=str, required=True,
+                            help='path to the run directory')
+    eval_args.add_argument('-n', '--sub_name', type=str, required=True, choices=['best', 'best_val'],
+                            help='sub name of the model')
+    
+    viz_args = subparsers.add_parser('viz', description='visualize the attention weights')
+    viz_args.add_argument('-d', '--run_dir', type=str, required=True,
+                            help='path to the run directory')
+    viz_args.add_argument('-n', '--sub_name', type=str, required=True, choices=['best', 'best_val'],
+                            help='sub name of the model')
+    
+    args = args_paser.parse_args()
+    
+    if args.sub_command == 'train':
+        train(args.k_fold)
+    elif args.sub_command == 'eval':
+        evaluate_kfold_model(args.run_dir, args.sub_name)
+    elif args.sub_command == 'viz':
+        viz_attn(args.run_dir, args.sub_name)
