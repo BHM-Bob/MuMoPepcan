@@ -1,7 +1,7 @@
 '''
 Date: 2025-04-07 20:04:06
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-06-03 15:34:37
+LastEditTime: 2025-06-26 21:47:50
 Description: 
 '''
 import platform
@@ -19,6 +19,19 @@ ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
 import sys
 
 sys.path.append(str(ROOT / 'MuMoPepcan'))
+
+
+def collect_PLIP_results(path_df: pd.DataFrame) -> pd.DataFrame:
+    """function for combine original PLIP analysis result to a integrated data sheet"""
+    df_lst = []
+    for name, path, t in tqdm(path_df.loc[:, ['name', 'path', 't']].values):
+        if name == 'single-receptor':
+            continue
+        df_i = pd.read_csv(str(Path(path) / 'md_plip_interactions.csv'))
+        df_i['name'] = name
+        df_i['t'] = t
+        df_lst.append(df_i)
+    return pd.concat(df_lst)
 
 
 def make_one_hot_df(data_df: pd.DataFrame) -> pd.DataFrame:
