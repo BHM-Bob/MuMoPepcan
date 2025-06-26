@@ -1,7 +1,7 @@
 '''
 Date: 2025-04-04 10:59:36
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-06-03 15:06:30
+LastEditTime: 2025-06-26 21:59:38
 Description: 
 '''
 import platform
@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent
 
 def load_pose_data(pose_type: str = 'aligned_TM_pos', verbose: bool = True,
                    frame_start: int = 1, frame_end: int = 10001, frame_step: int = 1) -> tuple[torch.Tensor, torch.Tensor]:
