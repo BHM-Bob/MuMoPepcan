@@ -15,7 +15,7 @@ from mbapy.dl_torch.m import LayerCfg, TransCfg
 from mbapy.dl_torch.utils import GlobalSettings
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent.parent
 
 import sys
 

@@ -1,7 +1,7 @@
 '''
 Date: 2025-04-17 18:16:44
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-04-17 18:25:02
+LastEditTime: 2025-06-26 22:15:46
 Description: 
 '''
 import platform
@@ -15,7 +15,7 @@ from mbapy.dl_torch.m import LayerCfg, TransCfg
 from mbapy.dl_torch.utils import GlobalSettings
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent.parent
 
 import sys
 

@@ -18,7 +18,7 @@ from sklearn.svm import SVR
 from xgboost import XGBRegressor
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent
 
 def prepare_data():
     data = torch.load(str(ROOT / 'MuMoPepcan/data/processed_data/ligand_feats_PepDoRA_seq.pt'))

@@ -1,7 +1,7 @@
 '''
 Date: 2025-04-20 16:38:55
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-06-03 10:38:04
+LastEditTime: 2025-06-26 22:14:27
 Description: 
 '''
 import os
@@ -12,7 +12,7 @@ import pandas as pd
 from mbapy.file import get_dir, get_paths_with_extension
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent
 
 
 model_root = str(ROOT / 'MuMoPepcan/runs')

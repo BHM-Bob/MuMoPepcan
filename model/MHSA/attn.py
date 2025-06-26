@@ -1,7 +1,7 @@
 '''
 Date: 2025-04-11 11:59:04
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-06-03 10:55:45
+LastEditTime: 2025-06-26 22:16:39
 Description: 
 '''
 import platform
@@ -13,7 +13,7 @@ import torch.nn as nn
 from mbapy.dl_torch.bb import RoPE
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent.parent
 
 import sys
 
