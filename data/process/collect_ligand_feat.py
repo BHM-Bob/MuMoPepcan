@@ -20,7 +20,7 @@ from transformers import (AutoModel, AutoModelForCausalLM,
                           RobertaTokenizer, pipeline)
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent.parent
 
 
 def get_model(model_name: str):

@@ -1,7 +1,7 @@
 '''
 Date: 2025-04-07 20:04:06
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-06-26 21:47:50
+LastEditTime: 2025-06-26 22:24:34
 Description: 
 '''
 import platform
@@ -14,7 +14,7 @@ from lazydock.pml.plip_interaction import SUPPORTED_MODE
 from tqdm import tqdm
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent.parent
 
 import sys
 
@@ -83,6 +83,6 @@ def make_one_hot_df(data_df: pd.DataFrame) -> pd.DataFrame:
     return mat_df
 
 
-if __name__ == '__main__':
-    data_df = pd.read_csv(str(ROOT / 'MuMoPepcan/data/processed_data/MDS_plip_interactions.csv'))
-    mat_df = make_one_hot_df(data_df)
+# if __name__ == '__main__':
+#     data_df = pd.read_csv(str(ROOT / 'MuMoPepcan/data/processed_data/MDS_plip_interactions.csv'))
+#     mat_df = make_one_hot_df(data_df)

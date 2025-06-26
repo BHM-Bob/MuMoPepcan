@@ -1,7 +1,7 @@
 '''
 Date: 2025-04-03 10:18:29
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-04-23 09:58:14
+LastEditTime: 2025-06-26 22:23:12
 Description: 
 '''
 import platform
@@ -17,7 +17,7 @@ from MDAnalysis import AtomGroup, Universe
 from tqdm import tqdm
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent.parent
 
 
 def get_backbone_atoms(root: Path) -> Tuple[Universe, AtomGroup]:
