@@ -1,14 +1,15 @@
 '''
 Date: 2025-01-05 20:40:53
 LastEditors: BHM-Bob 2262029386@qq.com
-LastEditTime: 2025-06-06 19:51:54
+LastEditTime: 2025-06-26 22:06:12
 Description: 
 '''
-from glob import glob
+import argparse
 import os
 import platform
 import queue
 import shutil
+from glob import glob
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -23,20 +24,21 @@ from mbapy.dl_torch.data import DataSetRAM
 from mbapy.dl_torch.utils import (AverageMeter, GlobalSettings, Mprint,
                                   ProgressMeter, init_model_parameter,
                                   resume_checkpoint, save_checkpoint)
-from mbapy.file import get_paths_with_extension, get_dir
+from mbapy.file import get_dir, get_paths_with_extension
 from mbapy.plot import save_show
 from scipy.stats import pearsonr
 from sklearn.model_selection import KFold
 from torch.optim import Adam, AdamW
 
 SERVER = platform.uname().node
-ROOT = Path(f'/home/{SERVER}/Desktop/BHM/CB1-Pepcans-MDS/')
+ROOT = Path(__file__).parent.parent.parent
 
 import sys
 
 sys.path.append(str(ROOT / 'MuMoPepcan'))
 
-from model.MHSA.attn import Attn as AttnBase, PredTokenAttn
+from model.MHSA.attn import Attn as AttnBase
+from model.MHSA.attn import PredTokenAttn
 from model.MLP.ML_Decoder import MLDecoderLite
 from model.predictor import MCMLP
 
@@ -135,9 +137,14 @@ def draw_loss(train_ls: List[float], test_ls: List[float], run_dir: str):
     plt.ylim(0, 3)
     save_show(os.path.join(run_dir, 'loss_zoom.png'), 600, show=False)
     
-def train_one_fold(run_dir: str, fold: int, train_ds, test_ds, valid_ds, input_dim, args: GlobalSettings):
+def train_one_fold(run_dir: str, fold: int, arch: str, train_ds, test_ds, valid_ds, input_dim, args: GlobalSettings):
     # create model
-    model = init_model_parameter(Attn3(input_dim, 3, 1, num_layers=1, nhead=8, dropout=0.4)).cuda()
+    if arch == 'Attn':
+        model = init_model_parameter(Attn(input_dim, 3, 1, num_layers=1, nhead=8, dropout=0.4)).cuda()
+    elif arch == 'Attn2':
+        model = init_model_parameter(Attn2(input_dim, 3, 1, num_layers=1, nhead=8, dropout=0.4)).cuda()
+    elif arch == 'Attn3':
+        model = init_model_parameter(Attn3(input_dim, 3, 1, num_layers=1, nhead=8, dropout=0.4)).cuda()
     optimizer = AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
     criterion = nn.MSELoss()
     # train
@@ -205,7 +212,7 @@ def get_dataset(data, labels: torch.Tensor, args: GlobalSettings, idx: np.array)
     x = [(h_i, m_i) for h_i, m_i in zip(data['hidden_states'][idx].cuda(), data['attention_mask'][idx].cuda())]
     return DataSetRAM(args, device='cuda', x=x, y=labels[idx]).split([0, 1], drop_last = False)[0]
 
-def train(k_fold: int = 5):
+def train(k_fold: int = 5, arch: str = 'Attn'):
     root = str(ROOT / 'MuMoPepcan/runs')
     run_dir = os.path.join(root, get_fmt_time())
     os.makedirs(run_dir)
@@ -230,7 +237,7 @@ def train(k_fold: int = 5):
         test_ds = get_dataset(data, labels, args, idx_train[test_idx])
         valid_ds = get_dataset(data, labels, args, idx_valid)
         # train
-        k_loss, k_val_loss = train_one_fold(run_dir, fold, train_ds, test_ds, valid_ds, data['hidden_states'].shape[2], args)
+        k_loss, k_val_loss = train_one_fold(run_dir, fold, arch, train_ds, test_ds, valid_ds, data['hidden_states'].shape[2], args)
         fold_results.append((k_loss, k_val_loss))
     df = pd.DataFrame(fold_results, columns=['test_loss', 'valid_loss'])
     df.to_excel(os.path.join(run_dir, 'KFold_results.xlsx'), index=False)
@@ -346,5 +353,25 @@ def evaluate_kfold_model(run_dir: str, sub_name: str = 'best'):
 
 
 if __name__ == '__main__':
-    train(k_fold=5)
-    # evaluate_kfold_model('2025-05-23 08-08-25.423160', 'best_val')
+    
+    args_paser = argparse.ArgumentParser()
+    subparsers = args_paser.add_subparsers(title='subcommands', dest='sub_command')
+    
+    train_args = subparsers.add_parser('train', description='training the Dual-model')
+    train_args.add_argument('-k', '--k-fold', type=int, default=5,
+                            help='number of folds for k-fold cross-validation')
+    train_args.add_argument('-a', '--arch', type=str, default='Attn', choices=['Attn', 'Attn2', 'Attn3'],
+                            help='architecture of the model')
+    
+    eval_args = subparsers.add_parser('eval', description='evaluate the trained model')
+    eval_args.add_argument('-d', '--run_dir', type=str, required=True,
+                            help='path to the run directory')
+    eval_args.add_argument('-n', '--sub_name', type=str, required=True, choices=['best', 'best_val'],
+                            help='sub name of the model')
+    
+    args = args_paser.parse_args()
+    
+    if args.sub_command == 'train':
+        train(args.k_fold, args.arch)
+    elif args.sub_command == 'eval':
+        evaluate_kfold_model(args.run_dir, args.sub_name)
