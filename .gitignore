@@ -135,7 +135,6 @@ _study
 
 # binary data
 data/processed_data
-data/label
 data/test*
 
 # config
