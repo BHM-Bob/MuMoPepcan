@@ -6,7 +6,7 @@
 -->
 ## MuMoPepcan: A Multilevel Multimodal Multitask Model for CB1R Targeted Peptide Biologic Activity Prediction
 
-This is the official code repository for the paper: MuMoPepcan: A Multilevel Multimodal Multitask Model for CB1R Targeted Peptide Biologic Activity Prediction.
+This is the official code repository for the paper: Multimodal profiling of Pepcan-CB1 receptor structure-activity relationships: integrating molecular dynamics simulations, biological profiling, and the deep learning model MuMoPepcan.
 
 You can use this code to reproduce the MuMoPepcan results in the paper, AND you can even extend our work to your interested receptors!
 
@@ -131,4 +131,4 @@ Note that our code ignore H8 and C-Term for CB1R by ignore the residue number la
 
 
 ### Citation
-`UNK`
+`Man H, Bao H, Niu Z, et al. Multimodal profiling of Pepcan-CB1 receptor structure-activity relationships: integrating molecular dynamics simulations, biological profiling, and the deep learning model MuMoPepcan[J].Bioorganic Chemistry,2025, 165: 109027.`
